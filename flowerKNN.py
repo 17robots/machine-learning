@@ -7,7 +7,6 @@ from matplotlib import cm
 from sklearn.model_selection import train_test_split
 import pandas as pd
 
-
 flowers = pd.read_excel('irisData.xlsx', sheet_name='irisDataset')
 flowers.head()
 lookup_flower_name = dict(
@@ -42,8 +41,8 @@ knn.fit(X_train, Y_train)
 # calculate the validity of the model for future predictions
 knn.score(X_test, Y_test)
 
-flower_prediction = knn.predict()
-print lookup_flower_name(flower_prediction)
+flower_prediction = knn.predict([7, 2.9, 5.7, 1.8])
+print(lookup_flower_name(flower_prediction[0]))
 
 # calculate the sensitivity of the k-NN classification accuracy to the choice of the k parameter
 k_range = range(1, 20)
@@ -75,5 +74,3 @@ for s in t:
 plt.xlabel('Training Test Proportion (%)')
 plt.ylabel('accuracy')
 plt.show()
-
-# calculate the model validity byu taking out one of the models and predict with its value
