@@ -1,11 +1,16 @@
 import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
+
+import pandas as pd
+from pandas.plotting import scatter_matrix
+
+from matplotlib import cm
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
-from pandas.plotting import scatter_matrix
-from matplotlib import cm
+
 from sklearn.model_selection import train_test_split
-import pandas as pd
+from sklearn import svm, datasets
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import plot_confusion_matrix
 
 flowers = pd.read_excel('irisData.xlsx', sheet_name='irisDataset')
 flowers.head()
@@ -15,7 +20,9 @@ lookup_flower_name = dict(
 
 print("Model: Iris Flower Predictions")
 print("Number of Attributes: 4, petal length, petal width, sepal length and sepal width")
-# print(lookup_flower_name)
+print("Class Distribution: 50 setosa, 50 versicolor and 50 virginica")
+print("Data Distribution: random")
+print("Distance Metric: Minkowski")
 
 X = flowers[['petal_length', 'petal_width', 'sepal_length', 'sepal_width']]
 Y = flowers['species']
@@ -40,7 +47,7 @@ knn = KNeighborsClassifier(n_neighbors=5, weights='uniform')
 knn.fit(X_train, Y_train)
 
 # calculate the validity of the model for future predictions
-knn.score(X_test, Y_test)
+print("Accuracy: ", knn.score(X_test, Y_test))
 
 # lets make a prediction for a flower
 flower_prediction = knn.predict([[7, 2.9, 5.7, 1.8]])
@@ -60,7 +67,7 @@ plt.scatter(k_range, scores)
 plt.xticks([0, 5, 10, 15, 20])
 plt.show()
 
-# calculate the sensitivity of the k-NN classification accuracy tp the train/test split portion
+# calculate the sensitivity of the k-NN classification accuracy to the train/test split portion
 t = [.8, .7, .6, .5, .4, .3, .2]
 knn = KNeighborsClassifier(n_neighbors=5)
 plt.figure()
@@ -75,4 +82,21 @@ for s in t:
 
 plt.xlabel('Training Test Proportion (%)')
 plt.ylabel('accuracy')
+plt.show()
+
+# confusion matrix
+classifier = svm.SVC(kernel='linear', C=0.01).fit(X_train, Y_train)
+
+np.set_printoptions(precision=2)
+
+titles_options = [("Confusion matrix, without normalization", None),
+                  ("Normalized confusion matrix", 'true')]
+
+for title, normalize in titles_options:
+    disp = plot_confusion_matrix(
+        classifier, X_test, Y_test, display_labels=['setosa', 'versicolor', 'virginica'], normalize=normalize)
+    disp.ax_.set_title(title)
+    print(title)
+    print(disp.confusion_matrix)
+
 plt.show()
