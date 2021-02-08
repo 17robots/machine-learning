@@ -54,7 +54,7 @@ flower_prediction = knn.predict([[7, 2.9, 5.7, 1.8]])
 print(lookup_flower_name[flower_prediction[0]])
 
 # calculate the sensitivity of the k-NN classification accuracy to the choice of the k parameter
-k_range = range(1, 20)
+k_range = range(1, 20, 5)
 scores = []
 for k in k_range:
     knn = KNeighborsClassifier(n_neighbors=k)
@@ -85,6 +85,10 @@ plt.ylabel('accuracy')
 plt.show()
 
 # confusion matrix
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, random_state=0)
+
+knn.fit(X_train, Y_train)
+
 classifier = svm.SVC(kernel='linear', C=0.01).fit(X_train, Y_train)
 
 np.set_printoptions(precision=2)
@@ -94,7 +98,7 @@ titles_options = [("Confusion matrix, without normalization", None),
 
 for title, normalize in titles_options:
     disp = plot_confusion_matrix(
-        classifier, X_test, Y_test, display_labels=['setosa', 'versicolor', 'virginica'], normalize=normalize)
+        classifier, X_test, Y_test, display_labels=['setosa', 'virginica', 'versicolor'], normalize=normalize)
     disp.ax_.set_title(title)
     print(title)
     print(disp.confusion_matrix)
