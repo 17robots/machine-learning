@@ -18,6 +18,7 @@ lookup_flower_name = dict(
     zip(flowers.species.unique(), flowers.name.unique())
 )
 
+
 print("Model: Iris Flower Predictions")
 print("Number of Attributes: 4, petal length, petal width, sepal length and sepal width")
 print("Class Distribution: 50 setosa, 50 versicolor and 50 virginica")
@@ -54,7 +55,7 @@ flower_prediction = knn.predict([[7, 2.9, 5.7, 1.8]])
 print(lookup_flower_name[flower_prediction[0]])
 
 # calculate the sensitivity of the k-NN classification accuracy to the choice of the k parameter
-k_range = range(1, 20, 5)
+k_range = range(1, 20)
 scores = []
 for k in k_range:
     knn = KNeighborsClassifier(n_neighbors=k)
