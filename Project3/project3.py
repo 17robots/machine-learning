@@ -227,30 +227,30 @@ else:
     tempWeights.append(Parameters(
         (16,), 0.986013986013986, 'adam', 'identity', 0.0001))
 
+
+def generateConfusion(model: Parameters):
+    titles_options = [("Confusion matrix, without normalization", None),
+                      ("Normalized confusion matrix", 'true')]
+    classifier.activation = model.activation
+    classifier.hidden_layer_sizes = model.weight
+    classifier.solver = model.solver
+    classifier.alpha = model.alpha
+    classifier.fit(X_train_sc, y_train)
+    for title, normalize in titles_options:
+        disp = plot_confusion_matrix(
+            classifier, X_test_sc, y_test, display_labels=['malignant', 'benign'], normalize=normalize)
+        disp.ax_.set_title(title)
+        if(globalGraphMode):
+          plt.show()
+        print(title)
+        print(disp.confusion_matrix)
+
 # nonsaved weights side
 if globalDemoMode:
     for parameter in tempWeights:
-        print("hello")
-        # generate heatmaps
+        generateConfusion(parameter)
+        # generate confusion matricies
 else:
     # saved weights Side
     for parameter in bestWeights:
-        print("hello")
-        # generate heatmaps
-
-
-def generateConfusion(models: [Parameters]):
-    titles_options = [("Confusion matrix, without normalization", None),
-                      ("Normalized confusion matrix", 'true')]
-    for model in models:
-        classifier.activation = model.activation
-        classifier.hidden_layer_sizes = model.weight
-        classifier.solver = model.solver
-        classifier.alpha = model.alpha
-        classifier.fit(X_train_sc, y_train)
-        for title, normalize in titles_options:
-            disp = plot_confusion_matrix(
-                classifier, X_test_sc, y_test, display_labels=['setosa', 'virginica', 'versicolor'], normalize=normalize)
-            disp.ax_.set_title(title)
-            print(title)
-            print(disp.confusion_matrix)
+        generateConfusion(parameter)
