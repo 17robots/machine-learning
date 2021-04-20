@@ -92,7 +92,7 @@ class Parameters:
         return f"{i}"
 
 
-alphas = [.1, .01]
+alphas = [.1, .01, .0001]
 
 activations = ['identity', 'logistic', 'tanh', 'relu']
 
@@ -228,29 +228,31 @@ else:
         (16,), 0.986013986013986, 'adam', 'identity', 0.0001))
 
 
-def generateConfusion(model: Parameters):
-    titles_options = [("Confusion matrix, without normalization", None),
-                      ("Normalized confusion matrix", 'true')]
+def generateConfusion(model: Parameters, num):
+    title = f"Model {num} Confusion Matrix"
     classifier.activation = model.activation
     classifier.hidden_layer_sizes = model.weight
     classifier.solver = model.solver
     classifier.alpha = model.alpha
     classifier.fit(X_train_sc, y_train)
-    for title, normalize in titles_options:
-        disp = plot_confusion_matrix(
-            classifier, X_test_sc, y_test, display_labels=['malignant', 'benign'], normalize=normalize)
-        disp.ax_.set_title(title)
-        if(globalGraphMode):
-          plt.show()
-        print(title)
-        print(disp.confusion_matrix)
+    disp = plot_confusion_matrix(
+        classifier, X_test_sc, y_test, display_labels=['malignant', 'benign'], normalize=None)
+    disp.ax_.set_title(title)
+    if(globalGraphMode):
+        plt.show()
+    print(title)
+    print(disp.confusion_matrix)
 
-# nonsaved weights side
+    # nonsaved weights side
 if globalDemoMode:
+    modelNum = 0
     for parameter in tempWeights:
-        generateConfusion(parameter)
+        modelNum += 1
+        generateConfusion(parameter, modelNum)
         # generate confusion matricies
 else:
     # saved weights Side
+    modelNum = 0
     for parameter in bestWeights:
-        generateConfusion(parameter)
+        modelNum += 1
+        generateConfusion(parameter, modelNum)
